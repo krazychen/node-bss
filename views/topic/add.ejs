@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title><%= title %> 编辑帖子</title>
+    <% include ../common/link.ejs %>
+    <link rel="stylesheet" type="text/css" href="/css/simditor.css"/>
+</head>
+<body>
+
+<% include ../common/header %>
+
+<div class="layui-container fly-marginTop">
+    <div class="fly-panel" pad20 style="padding-top: 5px;">
+        <% if(!session.uid){ %>
+        <div class="fly-none">并无权限</div>
+        <% } else { %>
+        <div class="layui-form layui-form-pane">
+            <div class="layui-tab layui-tab-brief" lay-filter="user">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">编辑帖子</li>
+                </ul>
+                <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+                    <div class="layui-tab-item layui-show">
+                        <form>
+                            <div class="layui-row layui-col-space15 layui-form-item">
+                                <div class="layui-col-md9">
+                                    <label for="L_title" class="layui-form-label">标题</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="postname" name="postname" required lay-verify="required"
+                                               autocomplete="off" class="layui-input">
+                                    </div>
+                                    <br>
+                                    <label for="L_title" class="layui-form-label" required>主题</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="topic" name="topic" required lay-verify="required"
+                                               autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-form-text">
+                                <div class="layui-input-block">
+                                    <textarea id="content" name="content" required lay-verify="required"
+                                              placeholder="详细描述" class="layui-textarea fly-editor"
+                                              style="height: 260px;"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <button id="submit" type="button" class="layui-btn">立即发布</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="pre">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+
+</div>
+
+<% include ../common/footer %>
+<script type="text/javascript" src="/javascripts/jquery.js"></script>
+<script type="text/javascript" src="/javascripts/module.js"></script>
+<script type="text/javascript" src="/javascripts/hotkeys.js"></script>
+<script type="text/javascript" src="/javascripts/uploader.js"></script>
+<script type="text/javascript" src="/javascripts/simditor.js"></script>
+<script>
+    var content = new Simditor({
+        textarea: $('#content'),
+        pasteImage: true
+    });
+
+    $("#submit").click(function(){
+        let postname=$("#postname").val();
+        let topic=$("#topic").val();
+        let content=$("#content").val();
+        let data = {
+            postname:postname,
+            topic:topic,
+            content:content
+        }
+        $.post('/api/add', data, function (res) {
+            // console.log(res);
+            if (res.status === 'success') {
+                console.log('发表成功');
+                window.location.href='/topic/' + res.pid;
+            } 
+            else{
+                console.log('发表失败');
+                window.alert('发表失败');   
+            }
+        });
+        return false;
+    });
+</script>
+
+</body>
+</html>

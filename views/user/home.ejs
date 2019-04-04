@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title><%= session.username %>的主页</title>
+    <% include ../common/link.ejs %>
+</head>
+<body class="fly-full">
+
+<% include ../common/header.ejs %>
+
+<div class="fly-home fly-panel"
+     style="background: no-repeat center url(https://picsum.photos/1170/365/?image=<%= new Date().getSeconds() %>);">
+    <% if(!data1[0] || !data1[0].pic){%>
+    <img src="/images/avatar/2.jpg" alt="username">
+    <% }%>
+    <h1>
+        <%= session.username %>
+        <% if(session.sex == 'M'){ %>
+        <i class="iconfont icon-nan"></i>
+        <% } else{ %>
+        <i class="iconfont icon-nv"></i>
+        <% } %>
+        <!--<span style="color:#c00;">（管理员）</span>-->
+    </h1>
+
+    <p class="fly-home-info">
+        <%
+        function p(s) {
+            return s < 10 ? '0' + s: s;//时间补零
+        }
+        var date = new Date(session.utime);
+        if(date) {
+            date_value1=date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+        }
+        date_value1 = '未知'
+        %>
+        <i class="iconfont icon-shijian"></i><span><%= date_value1%> 加入</span>
+        <i class="iconfont icon-chengshi"></i><span>来自中国 <%= session.city %></span>
+    </p>
+
+    <% if(session.sign){ %>
+    <p class="fly-home-sign">
+        签名： <%= session.sign %>
+    </p>
+    <% } else { %>
+    <p class="fly-home-sign">
+        这个人很懒，没有留下任何签名
+    </p>
+    <% } %>
+    <div class="fly-sns" data-user="{{ encodeURIComponent(userinfo) }}">
+        <a href="" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
+        <a href="" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
+    </div>
+
+</div>
+
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6 fly-home-jie">
+            <div class="fly-panel">
+                <h3 class="fly-panel-title"><%= session.username %> 最近的发帖</h3>
+                <ul class="jie-row" id="send">
+                    <% for(var i = 0;data1 && i < data1.length && i < 10;i++){ %>
+                    <li>
+                        <a href="/topic/<%= data1[i].pid %>" class="jie-title"><%= data1[i].postname %></a>
+                        <%
+                            var date = new Date(data1[i].publishtime);
+                            date_value=date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+                        %>
+                        <i><%= date_value %></i>
+                        <em class="layui-hide-xs"><%= parseInt(data1[i].visits) %>阅读/<%= parseInt(data1[i].reply) %>
+                            回复</em>
+                    </li>
+                    <% } %>
+                    <% if(data1.length === 0) { %>
+                    <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i
+                                style="font-size:14px;">没有发表任何帖子</i></div>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-col-md6 fly-home-da">
+            <div class="fly-panel">
+                <h3 class="fly-panel-title"><%= session.username %>最近的回帖</h3>
+                <ul class="home-jieda">
+                    <% for(var i = 0;i < data2.length && i < 10;i++){ //前10条回帖   %>
+                    <li>
+                        <p>
+                            <%
+                                var date = new Date(data2[i].atime);
+                                console.log(date);
+                                date_value2 = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+                            %>
+                            <span><%=  date_value2%></span>
+                            在<a href="/topic/<%= data2[i].pid %>"
+                                target="_blank"><%= data2[i].postname %></a>中回贴：
+                        </p>
+                        <div class="home-dacontent"><%- data2[i].content.substr(0, 50).replace(/\\n/g, '<br>') %></div>
+                    </li>
+                    <% } %>
+                    <% if(data2.length === 0) { %>
+                    <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回复任何帖子</span>
+                    </div>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../common/footer.ejs %>
+
+</body>
+</html>

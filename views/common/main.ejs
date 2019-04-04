@@ -1,0 +1,80 @@
+
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+            <div class="fly-panel" style="margin-bottom: 0;">
+
+                <% include filter.ejs %>
+
+                    <% if(data) data.forEach(function (item, index) { %>
+                        <ul class="fly-list" id="lists">
+                            <li>
+                                <a href="user/<%= item.uid %>" class="fly-avatar">
+                                    <img src="https://picsum.photos/200/200/?image=<%= (index + 1) * (new Date().getSeconds()) + 10 %>">
+                                </a>
+                                <h2>
+                                    <a class="layui-badge">
+                                        <%= item.topic?item.topic:'HZNU' %>
+                                    </a>
+                                    <a href="/topic/<%= item.pid %>">
+                                        <%= item.postname %>
+                                    </a>
+                                </h2>
+                                <div class="fly-list-info">
+                                    <a href="user/<%= item.uid %>" link>
+                                        <cite>
+                                            <%= item.username %>
+                                        </cite>
+                                    </a>
+                                    <span>
+                                        <%
+                                    function p(s) {
+                                        return s < 10 ? '0' + s: s; //时间补零
+                                    }
+                                    let date = new Date(item.publishtime);
+                                    let date_value1=date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+                                %>
+                                            <%= date_value1 %>
+                                    </span>
+                                    <span class="fly-list-nums">
+                                        <i class="iconfont icon-pinglun1" title="回答"></i>
+                                        <%= Number.parseInt(item.reply) %>
+                                    </span>
+                                </div>
+                                <% if(item.type && item.type !== "普通") { %>
+                                    <div class="fly-list-badge">
+                                        <span class="layui-badge layui-bg-red">
+                                            <!-- <%= item.type %> -->
+                                            精华
+                                        </span>
+                                    </div>
+                                    <% } %>
+                            </li>
+                        </ul>
+                        <% }) %>
+                            <% if(!data) { %>
+                                <div class="fly-none">没有相关数据</div>
+                                <% } %>
+                        <div style="text-align: center">
+                            <div class="laypage-main">
+                                <a href="/" class="laypage-first" title="首页">首页</a> 
+                                <% for (let i = 1; i < 6; i++) { %>
+                                        <a href="/?page=<%= i %>"
+                                            <% if(i == page) { %>
+                                                class="laypage-curr"
+                                            <% } %>
+                                        ><%= i %></a>                                    
+                                <% } %>
+                                <!-- <span>…</span> -->
+                                <a href="/?page=<%= parseInt(page) + 1 %>" class="laypage-next">下一页</a>
+                                <a href="/?page=5" class="laypage-last" title="尾页">尾页</a> 
+                            </div>
+                        </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <% include ../common/list-hot %>
+            <% include ../common/ad %>
+        </div>
+    </div>
+</div>

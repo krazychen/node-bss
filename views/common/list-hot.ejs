@@ -1,0 +1,43 @@
+<dl class="fly-panel fly-list-one" id="week_polular">
+    <dt class="fly-panel-title">本周热议</dt>
+    <!--<dd>-->
+    <!--<a href="">基于 layui 的极简社区页面模版</a>-->
+    <!--<span><i class="iconfont icon-pinglun1"></i> 16</span>-->
+    <!--</dd>-->
+
+    <!-- 无数据时 -->
+    <div class="fly-none" style="display: none;">没有相关数据</div>
+</dl>
+<script>
+    $(document).ready(function () {
+        init();
+
+        function init() {
+            $.ajax({
+                type: 'get',
+                url: '/api/topics',
+                data: {
+                    page: 1,
+                    limit: '15',
+                    sort: 'hot'
+                },
+                datatype: 'json',
+                success: function (res) {
+                    let topics = res.data;
+                    for (let i = 0; i < topics.length; ++i) {
+                        let str = topics[i].postname;
+                        if (str.length > 25) str = str.substring(0, 25) + '...'
+                        $("#week_polular").append('<dd>' + '<a href="/topic/' + topics[i].pid +
+                            '">' + str +
+                            '</a>' + '<span><i class="iconfont icon-pinglun1"></i>' + parseInt(topics[i]
+                            .reply) + '</span>' + '</dd>');
+                        // console.log(topics[i].title);
+                    }
+                },
+                error: function () {
+                    $('.fly-none').show();
+                }
+            });
+        }
+    });
+</script>
