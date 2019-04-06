@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/add', function (req, res, next) {
     let data = {
-        title: 'HZNU CLUB',
+        title: 'NodeBBS',
         session: req.session
     };
     res.render('topic/add', data);
@@ -23,7 +23,7 @@ router.get('/:topic_id', function (req, res, next) {
         if (err)
             throw err;
         let data = {
-            title: 'HZNU CLUB',
+            title: 'NodeBBS',
             session: req.session,
             data: JSON.parse(body).data,
             reply: JSON.parse(body).reply

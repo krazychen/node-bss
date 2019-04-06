@@ -10,7 +10,7 @@ router.get('/', function (req, res, next) {
         if (err)
             throw err;
         let data = {
-            title: 'HZNU CLUB',
+            title: 'NodeBBS',
             session: req.session,
             data: JSON.parse(body).data,
             page: req.query.page || '1'

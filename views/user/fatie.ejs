@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <% include ../common/link.ejs %>
+</head>
+<body style="margin-top:0px;height: 100%">
+    <div class="layui-row layui-col-space15" style="height: 100%">
+        <div class="layui-col-md6 fly-home-jie" style="height: 100%">
+            <div class="fly-panel" style="height: 100%">
+                <h3 class="fly-panel-title"><%= session.username %> 最近的发帖</h3>
+                <ul class="jie-row" id="send">
+                    <%
+                    function p(s) {
+                        return s < 10 ? '0' + s: s;//时间补零
+                    }
+                    for(var i = 0;data1 && i < data1.length && i < 10;i++){ %>
+                        <li>
+                            <a href="/topic/<%= data1[i].pid %>" class="jie-title"><%= data1[i].postname %></a>
+                            <%
+                                var date = new Date(data1[i].publishtime);
+                                date_value=date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+                            %>
+                            <i><%= date_value %></i>
+                            <em class="layui-hide-xs"><%= parseInt(data1[i].visits) %>阅读/<%= parseInt(data1[i].reply) %>
+                                回复</em>
+                        </li>
+                    <% } %>
+                    <% if(data1.length === 0) { %>
+                        <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i
+                                    style="font-size:14px;">没有发表任何帖子</i></div>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <% include ../common/link.ejs %>
+</head>
+<body style="margin-top:0px;height: 100%">
+<div class="layui-row layui-col-space15" style="height: 100%">
+    <div class="layui-col-md6 fly-home-da" style="height: 100%">
+        <div class="fly-panel" style="height: 100%">
+            <h3 class="fly-panel-title"><%= session.username %>最近的回帖</h3>
+            <ul class="home-jieda">
+                <%
+                function p(s) {
+                    return s < 10 ? '0' + s: s;//时间补零
+                }
+                for(var i = 0;i < data1.length && i < 10;i++){ //前10条回帖   %>
+                <li>
+                    <p>
+                        <%
+                            var date = new Date(data1[i].atime);
+                            console.log(date);
+                            date_value1 = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+                        %>
+                        <span><%=  date_value1%></span>
+                        在<a href="/topic/<%= data1[i].pid %>"
+                            target="_blank"><%= data1[i].postname %></a>中回贴：
+                    </p>
+                    <div class="home-dacontent"><%- data1[i].content.substr(0, 50).replace(/\\n/g, '<br>') %></div>
+                </li>
+                <% } %>
+                <% if(data1.length === 0) { %>
+                    <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回复任何帖子</span>
+                    </div>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

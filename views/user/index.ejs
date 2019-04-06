@@ -1,1 +1,55 @@
-<!-- 个人信息界面，暂未编写 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title><%= session.username %>的主页</title>
+    <% include ../common/link.ejs %>
+</head>
+<body class="fly-full">
+
+<% include ../common/header.ejs %>
+
+<% include personal.ejs %>
+
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md2 fly-home-jie" style="height: 800px" >
+            <div class="layui-side-scroll layui-bg-black" style="width:100%" >
+                <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="demo" style="width:100%" style="margin-right: 10px;">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">个人信息</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="http://www.baidu.com" target="targetText">修改信息</a></dd>
+                            <dd><a href="javascript:;">修改头像</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item"><a href="/user/fatie/<%= session.uid %>" target="targetText">我的发帖</a></li>
+                    <li class="layui-nav-item"><a href="/user/huitie/<%= session.uid %>" target="targetText">我的回帖</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-col-md10 fly-home-da" style="height: 800px">
+            <div class="fly-panel"  style="width:100%;height: 100%" >
+                <iframe src=""  style="overflow:hidden;" scrolling="yes" frameborder="no" width="100%" height="100%" name="targetText"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../common/footer.ejs %>
+
+</body>
+</html>
+<script>
+    layui.use('element', function(){
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+
+        //监听导航点击
+        element.on('nav(demo)', function(elem){
+            //console.log(elem)
+            layer.msg(elem.text());
+        });
+    });
+</script>

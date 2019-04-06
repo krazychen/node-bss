@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title><%= title %> 编辑帖子</title>
     <% include ../common/link.ejs %>
-    <link rel="stylesheet" type="text/css" href="/css/simditor.css"/>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/simditor.css"/>
 </head>
 <body>
 
@@ -72,7 +72,14 @@
 <script>
     var content = new Simditor({
         textarea: $('#content'),
-        pasteImage: true
+        pasteImage: true,
+        upload : {
+            url : 'ImgUpload.action', //文件上传的接口地址
+            params: null, //键值对,指定文件上传接口的额外參数,上传的时候随文件一起提交
+            fileKey: 'fileDataFileName', //server端获取文件数据的參数名
+            connectionCount: 3,
+            leaveConfirm: '正在上传文件'
+        }
     });
 
     $("#submit").click(function(){
