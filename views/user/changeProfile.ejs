@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <% include ../common/link.ejs %>
+</head>
+<body style="margin-top:0px;height: 100%">
+<div class="layui-row layui-col-space15" style="height: 100%">
+    <div class="layui-col-md6 fly-home-jie" style="height: 100%">
+        <div class="fly-panel" style="height: 100%">
+            <h3 class="fly-panel-title"><%= session.username %> 的个人资料</h3>
+            <form class="layui-form" action="" lay-filter="profile" style="padding-top: 20px;width: 80%">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="text" disabled name="email" style="width: 40%" lay-verify="title" autocomplete="off"  class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input lay-verify="username" type="text" name="username" style="width: 40%" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-block">
+                        <input lay-verify="password1" type="password" id="password1" name="password1" style="width: 40%" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">重复密码</label>
+                    <div class="layui-input-block">
+                        <input lay-verify="password2" type="password" id="password2" name="password2" style="width: 40%" placeholder="请再次输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="sex" value="男" title="男" checked="">
+                        <input type="radio" name="sex" value="女" title="女">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">城市</label>
+                    <div class="layui-input-inline" style="width: 15%">
+                        <select id="province" name="province" lay-filter="province">
+                            <option value="">请选择省</option>
+                            <% if(provinceData) provinceData.forEach(function (item, index) { %>
+                                <option value="<%=item.code %>"><%=item.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline" style="width: 15%">
+                        <select id="city" name="city" lay-filter="city">
+                            <option value="">请选择市</option>
+                            <% if(cityData) cityData.forEach(function (item, index) { %>
+                            <option value="<%=item.code %>"><%=item.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline" style="width: 15%">
+                        <select id="area" name="area" lay-filter="area">
+                            <option value="">请选择区县</option>
+                            <% if(areaData) areaData.forEach(function (item, index) { %>
+                            <option value="<%=item.code %>"><%=item.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">签名</label>
+                    <div class="layui-input-block">
+                        <textarea id="sign" name="sign" placeholder="请输入签名" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item" >
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="changeProfile">立即提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        form.verify({
+            username: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!value){
+                    return '用户名不能为空';
+                }
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+                    return '用户名不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '用户名不能全为数字';
+                }
+            },
+            password1:function(value,item){
+                let pw2=$("#password2").val();
+                if(pw2&!value){
+                    return '密码不能为空';
+                }
+                if(pw2!=value){
+                    return '2个密码必须一致';
+                }
+            },
+            password2:function(value,item){
+                let pw1=$("#password1").val();
+                if(pw1&!value){
+                    return '密码不能为空';
+                }
+                if(pw1!=value){
+                    return '2个密码必须一致';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(changeProfile)', function(data){
+            console.log(JSON.stringify(data.field));
+            $.post('/user/profile/<%= session.uid %>', data.field, function (res) {
+                // console.log(res);
+                if (res.status == 0) {
+                    return layer.alert('修改个人资料失败');
+                } else {
+                    $('#psSign', window.parent.document).html("签名： "+res.session.sign);
+                    $('#psun', window.parent.document).html(res.session.username);
+                    $('#pscf', window.parent.document).html("来自 "+res.session.province+" "+res.session.city);
+
+                    return layer.alert('修改个人资料成功');
+                }
+            });
+            return false;
+        });
+
+        form.on('select(province)',function(data){
+            $('#city').empty();//选择省的时候清空城市地区的值
+            $('#city').html('<option value="">请选择市</option>');
+            $('#area').empty();//选择省的时候清空城市地区的值
+            $('#area').html('<option value="">请选择区县</option>');
+            if(data.value){
+                let jsondata = {
+                    "code":data.value
+                }
+                $.post('/user/getCitys', jsondata, function (res) {
+                    let cityData=res.data1;
+                    console.log(cityData);
+                    if(cityData.length>0){
+                        var str="";
+                        cityData.forEach(function(ele,index){
+                            str='<option value="'+ele.code+'">'+ele.name+'</option>';
+                            $('#city').append(str);
+                        })
+                        form.render('select');
+                    }
+                });
+            }
+        })
+
+        form.on('select(city)',function(data){
+            $('#area').empty();//选择省的时候清空城市地区的值
+            $('#area').html('<option value="">请选择区县</option>');
+            if(data.value){
+                let jsondata = {
+                    "code":data.value
+                }
+                $.post('/user/getAreas', jsondata, function (res) {
+                    let cityData=res.data1;
+                    // console.log(cityData);
+                    if(cityData.length>0){
+                        let str="";
+                        cityData.forEach(function(ele,index){
+                            str='<option value="'+ele.code+'">'+ele.name+'</option>';
+                            $('#area').append(str);
+                        })
+                        form.render('select');
+                    }
+                });
+            }
+        })
+
+        //表单初始赋值
+        form.val('profile', {
+            "username": "<%= session.username %>"
+            ,"email": "<%= session.mail %>"
+            ,"sex": "<%= session.sex %>"
+            ,"sign": "<%= session.sign %>"
+        })
+
+        <% if(session.province_code){ %>
+        $("#province").val("<%= session.province_code %>");
+        form.render('select');
+            <% if(session.city_code){ %>
+            $("#city").val("<%= session.city_code %>");
+            form.render('select');
+                <% if(session.area_code){ %>
+                $("#area").val("<%= session.area_code %>");
+                form.render('select');
+                <% } %>
+            <% } %>
+        <% } %>
+    });
+</script>

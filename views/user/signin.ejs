@@ -59,7 +59,7 @@
         let data = {
             mail: mail,
             password: hex_md5(password)
-        }
+        };
         $.post('/api/signin', data, function (res) {
             // console.log(res);
             if (res.status === 'success') {

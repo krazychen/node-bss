@@ -3,12 +3,12 @@
     "host": "localhost",
     "user": "root",
     "password": "4444444",
-    "database": "club"
+    "database": "nodebbs"
   },
   "my_dbConfig_slave": {
     "host": "localhost",
     "user": "root",
     "password": "4444444",
-    "database": "club"
+    "database": "nodebbs"
   }
 }

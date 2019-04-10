@@ -10,11 +10,11 @@
                         <ul class="fly-list" id="lists">
                             <li>
                                 <a href="user/<%= item.uid %>" class="fly-avatar">
-                                    <img src="https://picsum.photos/200/200/?image=<%= (index + 1) * (new Date().getSeconds()) + 10 %>">
+                                    <img src="<%= session.pic %>">
                                 </a>
                                 <h2>
                                     <a class="layui-badge">
-                                        <%= item.topic?item.topic:'HZNU' %>
+                                        <%= item.topic?item.topic:'BBS' %>
                                     </a>
                                     <a href="/topic/<%= item.pid %>">
                                         <%= item.postname %>

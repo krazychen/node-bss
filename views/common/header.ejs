@@ -4,15 +4,12 @@
         <ul class="layui-nav fly-nav-user">
             <% if(session && session.username){ %>
                 <li class="layui-nav-item">
-                    <a href="/user/<%= session.uid %>">
-                        <i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a>
+                    <a href="/user/index/<%= session.uid %>">
+                        <i class="layui-icon" id="hdUserName" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i><%= session.username %>的主页</a>
                 </li>
                 <li class="layui-nav-item">
                     <a class="fly-nav-avatar" href="/user/index/<%= session.uid %>">
-                        <cite class="layui-hide-xs">
-                            <%= session.username %>
-                        </cite>
-                        <img src="/images/avatar/2.jpg">
+                        <img id="headerAvatar" src="<%= session.pic %>" style="margin-left:-6px;margin-right:3px;">
                     </a>
                 </li>
                 <li class="layui-nav-item">

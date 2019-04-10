@@ -81,7 +81,7 @@
                 mail: mail,
                 username: username,
                 password: hex_md5(password)
-            }
+            };
             $.post('/api/signup', data, function (res) {
                 // console.log(res);
                 if (res.status === 'success') {

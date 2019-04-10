@@ -18,10 +18,10 @@
             <div class="layui-side-scroll layui-bg-black" style="width:100%" >
                 <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="demo" style="width:100%" style="margin-right: 10px;">
                     <li class="layui-nav-item layui-nav-itemed">
-                        <a href="javascript:;">个人信息</a>
+                        <a href="javascript:">个人信息</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="http://www.baidu.com" target="targetText">修改信息</a></dd>
-                            <dd><a href="javascript:;">修改头像</a></dd>
+                            <dd><a href="/user/changeProfile/<%= session.uid %>" target="targetText">修改个人资料</a></dd>
+                            <dd><a href="/user/changeAvatar/<%= session.uid %>" target="targetText">修改头像</a></dd>
                         </dl>
                     </li>
                     <li class="layui-nav-item"><a href="/user/fatie/<%= session.uid %>" target="targetText">我的发帖</a></li>
@@ -49,7 +49,7 @@
         //监听导航点击
         element.on('nav(demo)', function(elem){
             //console.log(elem)
-            layer.msg(elem.text());
+            // layer.msg(elem.text());
         });
     });
 </script>

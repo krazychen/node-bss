@@ -78,7 +78,7 @@ router.get('/topic/:topic_id', function (req, res, next) {
 
 router.post('/signin', function (req, res, next) {
     let connection_read = dbhelper.con_read();
-    let sql = 'SELECT username, uid ,city ,utime, sign ,sex FROM user where mail = "' + req.body.mail + '" and password = "' + req.body.password + '"';
+    let sql = 'SELECT username,mail, uid ,country,province,province_code,city,city_code,area,area_code,utime, sign ,sex,pic FROM user where mail = "' + req.body.mail + '" and password = "' + req.body.password + '"';
     let sess = req.session;
     connection_read.query(sql, function (err, data) {
         connection_read.end();
@@ -90,10 +90,22 @@ router.post('/signin', function (req, res, next) {
         if (data.length > 0) {
             sess.views = 1;
             sess.username = data[0].username;
-            sess.city = data[0].city;
+            sess.mail = data[0].mail;
+            sess.country = data[0].country;
             sess.utime = data[0].utime;
             sess.sign = data[0].sign;
             sess.sex = data[0].sex;
+            sess.province = data[0].province;
+            sess.province_code = data[0].province_code;
+            sess.city = data[0].city;
+            sess.city_code = data[0].city_code;
+            sess.area = data[0].area;
+            sess.area_code = data[0].area_code;
+            if(data[0].pic.indexOf("public")!=-1){
+                sess.pic=data[0].pic.substring(data[0].pic.indexOf("public")+"public".length,data[0].pic.length);
+            }else{
+                sess.pic = data[0].pic;
+            }
             sess.uid = data[0].uid;
             sess.publishtime = data[0].publishtime || 0;
         } else {
@@ -107,7 +119,7 @@ router.post('/signup', function (req, res, next) {
     let connection_write = dbhelper.con_write();
     let connection_read = dbhelper.con_read();
     let sql1 = 'SELECT mail FROM user where mail = "' + req.body.mail + '"';
-    let sql = 'INSERT INTO user(mail, username, password, utime) VALUES("' + req.body.mail + '", "' + req.body.username + '", "' + req.body.password + '", now())';
+    let sql = 'INSERT INTO user(mail, username, password, utime, country) VALUES("' + req.body.mail + '", "' + req.body.username + '", "' + req.body.password + '", now(), "中国")';
     connection_read.query(sql1, function (err, data) {
         if (err)
             throw err;
