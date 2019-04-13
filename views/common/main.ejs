@@ -10,7 +10,11 @@
                         <ul class="fly-list" id="lists">
                             <li>
                                 <a href="user/<%= item.uid %>" class="fly-avatar">
-                                    <img src="<%= session.pic %>">
+                                    <% if(item.pic.indexOf("public") != -1){ %>
+                                    <img src="<%= item.pic.substring(item.pic.indexOf("public") + "public".length, item.pic.length) %>">
+                                    <% }else{ %>
+                                    <img src="<%= item.pic %>">
+                                    <% } %>
                                 </a>
                                 <h2>
                                     <a class="layui-badge">

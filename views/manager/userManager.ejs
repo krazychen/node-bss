@@ -152,7 +152,7 @@
             +'          <div class="layui-form-item">'
             +'              <label class="layui-form-label">密码</label>'
             +'              <div class="layui-input-inline">'
-            +'                  <input lay-verify="newpassword" type="password" id="newpassword" name="password1" placeholder="请输入密码" autocomplete="off" class="layui-input">'
+            +'                  <input lay-verify="newpassword" type="password" id="newpassword" name="newpassword" placeholder="请输入密码" autocomplete="off" class="layui-input">'
             +'              </div>'
             +'          </div>'
 
@@ -279,10 +279,10 @@
                                         var areaselect = 'dd[lay-value=' + data[0].area_code + ']';
                                         $('#area').siblings("div.layui-form-select").find('dl').find(areaselect).click();
                                     }
-                                },300);
+                                },200);
 
                             }
-                        },300);
+                        },200);
 
                     }
                 }

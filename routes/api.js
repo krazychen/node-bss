@@ -5,7 +5,7 @@ const dbhelper = require('../lib/dbhelper');
 /* GET home page. */
 router.get('/', function (req, res, next) {
     // API document
-    res.redirect('https://www.jianshu.com/p/224c004af262');
+    res.redirect('');
 });
 
 router.get('/topics', function (req, res) {

@@ -9,14 +9,14 @@
     <div class="layui-row layui-col-space15" style="height: 100%">
         <div class="layui-col-md6 fly-home-jie" style="height: 100%">
             <div class="fly-panel" style="height: 100%">
-                <h3 class="fly-panel-title">分类管理</h3>
+                <h3 class="fly-panel-title">主题管理</h3>
 
                 <div class="layui-fluid" style="padding: 0px">
                     <div class="layui-card">
                         <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-list" style="padding-top: 10px;padding-bottom: 10px;">
                             <div class="layui-form-item">
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">分类</label>
+                                    <label class="layui-form-label">主题</label>
                                     <div class="layui-input-inline">
                                         <input type="text" id="topicType" name="topicType" placeholder="请输入" autocomplete="off" class="layui-input">
                                     </div>
@@ -62,25 +62,25 @@
         let tableReload = table.render({
             elem: '#topicTypeTable'
             ,height: 550
-            ,url: '/mag/tableTopicType/' //数据接口
+            ,url: '/tp/tableTopicType/' //数据接口
             ,page: true //开启分页
             ,cols: [[ //表头
                 {field:'id',checkbox:true, fixed: 'left'}
-                ,{field: 'type', title: '分类', width:120, sort: true, fixed: 'left'}
-                ,{field: 'remark', title: '说明', width: 250}
+                ,{field: 'type', title: '主题', width:200, sort: true, fixed: 'left'}
+                ,{field: 'remark', title: '说明'}
             ]]
             ,parseData: function(res) { //res 即为原始返回的数据
                 return {
                     "code": res.status, //解析接口状态
                     "msg": res.message, //解析提示文本
                     "count": res.total, //解析数据长度
-                    "data": res.userdata //解析数据列表
+                    "data": res.topicTypeData //解析数据列表
                 };
             }
             ,id:'topicTypeTable'
             ,where: {
-                mail: '',
-                username: ''
+                topicType: '',
+                remark: ''
             }
         });
 
@@ -96,7 +96,7 @@
             tableReload.reload({
                 where: {
                     topicType: ''+topicType.val()+''
-                    ,remakr:''+remark.val()+''
+                    ,remark:''+remark.val()+''
                 }
                 ,page: {
                     curr: 1 //重新从第 1 页开始
@@ -108,25 +108,25 @@
         let topicTypeHtml=''
             +'<div class="layui-row"  id="newTopicType" >'
             +'  <div class="layui-col-md10">'
-            +'      <form class="layui-form" action="" lay-filter="profile" style="padding-top:20px;">'
+            +'      <form class="layui-form" action="" lay-filter="topicTypeForm" style="padding-top:20px;">'
             +'          <div class="layui-form-item">'
-            +'              <label class="layui-form-label">分类</label>'
+            +'              <label class="layui-form-label">主题</label>'
             +'              <div class="layui-input-inline">'
             +'                  <input type="hidden" id="id" name="id" >'
-            +'                  <input type="text" lay-verify="newTopicType" id="newTopicType" name="newTopicType" placeholder="请输入" autocomplete="off" class="layui-input">'
+            +'                  <input type="text" lay-verify="newType" id="newType" name="newType" placeholder="请输入" autocomplete="off" class="layui-input">'
             +'              </div>'
             +'          </div>'
 
             +'          <div class="layui-form-item">'
             +'              <label class="layui-form-label">说明</label>'
             +'              <div class="layui-input-inline">'
-            +'                  <input type="text" lay-verify="newRemark" id="newRemark" name="newRemark" placeholder="请输入" autocomplete="off" class="layui-input">'
+            +'                  <textarea id="newRemark" name="newRemark" placeholder="请输入" class="layui-textarea"></textarea>'
             +'              </div>'
             +'          </div>'
 
             +'          <div class="layui-form-item">'
             +'              <div class="layui-input-block">'
-            +'                  <button type="button" lay-submit lay-filter="addUser" class="layui-btn layui-btn-normal">提交</button>'
+            +'                  <button type="button" lay-submit lay-filter="addTopicType" class="layui-btn layui-btn-normal">提交</button>'
             +'              </div>'
             +'          </div>'
             +'      </form>'
@@ -135,10 +135,10 @@
 
         $('#add').on('click', function(){
             layer.open({
-                title:'添加分类',
+                title:'添加主题',
                 type: 1,
                 skin: 'layui-layer-rim', //加上边框
-                area: ['380px', '360px'], //宽高
+                area: ['380px', '320px'], //宽高
                 content: topicTypeHtml
             });
             form.render();
@@ -157,43 +157,19 @@
             // layer.alert(JSON.stringify(data));
             console.log(data[0])
             layer.open({
-                title:'编辑用户',
+                title:'编辑主题',
                 type: 1,
                 skin: 'layui-layer-rim', //加上边框
-                area: ['380px', '660px'], //宽高
-                content: userHtml
+                area: ['380px', '320px'], //宽高
+                content: topicTypeHtml
                 ,success:function(){
-                    $("#newmail").attr("disabled",true);
+                    $("#newType").attr("disabled",true);
                     //表单初始赋值
-                    form.val('profile', {
-                        "uid":data[0].uid
-                        ,"newmail":data[0].mail
-                        ,"newun":data[0].username
-                        ,"newsex":data[0].sex
-                        ,"newRoleType":data[0].role_type
-                        ,"newSign":data[0].sign
+                    form.val('topicTypeForm', {
+                        "id":data[0].id
+                        ,"newType":data[0].type
+                        ,"newRemark":data[0].remark
                     });
-
-                    if(data[0].province_code) {
-
-                        var select = 'dd[lay-value=' + data[0].province_code + ']';
-                        $('#province').siblings("div.layui-form-select").find('dl').find(select).click();
-                        form.render('select');
-                        setTimeout(function(){
-                            if(data[0].city_code) {
-                                var cityselect = 'dd[lay-value=' + data[0].city_code + ']';
-                                $('#city').siblings("div.layui-form-select").find('dl').find(cityselect).click();
-                                setTimeout(function(){
-                                    if(data[0].area_code) {
-                                        var areaselect = 'dd[lay-value=' + data[0].area_code + ']';
-                                        $('#area').siblings("div.layui-form-select").find('dl').find(areaselect).click();
-                                    }
-                                },300);
-
-                            }
-                        },300);
-
-                    }
                 }
             });
             form.render();
@@ -201,141 +177,61 @@
         });
 
         $('#delete').on('click', function(){
-            var checkStatus = table.checkStatus('usertable')
+            var checkStatus = table.checkStatus('topicTypeTable')
                 ,data = checkStatus.data;
             if(!data.length>0){
                 return layer.alert('请选择数据!');
             }
             // layer.alert(JSON.stringify(data));
             console.log(data)
-            let mails='';
+            let ids='';
             for(let i=0;i<data.length;i++){
-                mails+=data[i].uid;
+                ids+=data[i].id;
                 if(i!=data.length-1){
-                    mails+=',';
+                    ids+=',';
                 }
             }
             let jsondata = {
-                "mails":mails
+                "ids":ids
             }
-            $.post('/mag/deleteUser', jsondata, function (res) {
+            $.post('/tp/deleteTopicType', jsondata, function (res) {
                 if (res.status == 0) {
-                    return layer.alert('删除用户失败');
+                    return layer.alert('删除主题失败');
                 } else {
                     $('#search').click();
-                    return layer.alert('删除用户成功');
+                    return layer.alert('删除主题成功');
                 }
             });
         });
 
         form.verify({
-            newmail: function(value, item){ //value：表单的值、item：表单的DOM对象
+            newType: function(value, item){ //value：表单的值、item：表单的DOM对象
                 if(!value){
-                    return '邮箱不能为空';
-                }
-            },
-            newun:function(value,item){
-                if(!value){
-                    return '用户名不能为空';
-                }
-                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
-                    return '用户名不能有特殊字符';
-                }
-                if(/(^\_)|(\__)|(\_+$)/.test(value)){
-                    return '用户名首尾不能出现下划线\'_\'';
-                }
-                if(/^\d+\d+\d$/.test(value)){
-                    return '用户名不能全为数字';
-                }
-            },
-            newpassword:function(value,item){
-                if(!$("#uid").val()&&!value) {
-                    return '密码不能为空';
+                    return '主题不能为空';
                 }
             }
         });
 
-        form.on('select(province)',function(data){
-            // console.log(data)
-            $('#city').empty();//选择省的时候清空城市地区的值
-            $('#city').html('<option value="">请选择市</option>');
-            $('#area').empty();//选择省的时候清空城市地区的值
-            $('#area').html('<option value="">请选择区县</option>');
-            renderForm();
-            if(data.value){
-                let jsondata = {
-                    "code":data.value
-                }
-                $.post('/user/getCitys', jsondata, function (res) {
-                    let cityData=res.data1;
-                    // console.log(cityData);
-                    if(cityData.length>0){
-                        var str="";
-                        cityData.forEach(function(ele,index){
-                            str='<option value="'+ele.code+'">'+ele.name+'</option>';
-                            $('#city').append(str);
-                            form.render('select');
-
-                        })
-                        form.render('select');
-
-                    }
-                });
-            }
-        })
-
-        form.on('select(city)',function(data){
-            $('#area').empty();//选择省的时候清空城市地区的值
-            $('#area').html('<option value="">请选择区县</option>');
-            if(data.value){
-                let jsondata = {
-                    "code":data.value
-                }
-                $.post('/user/getAreas', jsondata, function (res) {
-                    let cityData=res.data1;
-                    // console.log(cityData);
-                    if(cityData.length>0){
-                        let str="";
-                        cityData.forEach(function(ele,index){
-                            str='<option value="'+ele.code+'">'+ele.name+'</option>';
-                            $('#area').append(str);
-                        })
-                        form.render('select');
-                    }
-                });
-            }
-        })
-
-
-        form.on('submit(addUser)', function(data) {
-            let newprovince = $('#province').find("option:selected").text();
-            data.field.province_name = newprovince;
-            let newcity = $('#city').find("option:selected").text();
-            data.field.city_name = newcity;
-            let newarea = $('#area').find("option:selected").text();
-            data.field.area_name = newarea;
-            if(data.field.newpassword){
-                data.field.newpassword = hex_md5(data.field.newpassword);
-            }
+        form.on('submit(addTopicType)', function(data) {
             console.log(JSON.stringify(data.field));
-            if(data.field.uid){
-                $.post('/mag/editUser', data.field, function (res) {
+            if(data.field.id){
+                $.post('/tp/editTopicType', data.field, function (res) {
                     if (res.status == 0) {
-                        return layer.alert('编辑用户失败');
+                        return layer.alert('编辑主题失败');
                     } else {
                         layer.closeAll();
                         $('#search').click();
-                        return layer.alert('编辑用户成功');
+                        return layer.alert('编辑主题成功');
                     }
                 });
             }else{
-                $.post('/mag/addUser', data.field, function (res) {
+                $.post('/tp/addTopicType', data.field, function (res) {
                     if (res.status == 0) {
-                        return layer.alert('添加用户失败');
+                        return layer.alert('添加主题失败');
                     } else {
                         layer.closeAll();
                         $('#search').click();
-                        return layer.alert('添加用户成功');
+                        return layer.alert('添加主题成功');
                     }
                 });
             }
