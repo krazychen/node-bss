@@ -204,6 +204,7 @@ router.get('/changeProfile/:user_id', function (req, res, next) {
                 }
             })
         }else{
+            res.render('user/changeProfile', data);
         }
     });
 });
@@ -248,13 +249,13 @@ router.post('/profile/:user_id', function (req, res, next) {
     let username = req.body.username;
     let password1 = req.body.passowrd1;
     let sex = req.body.sex;
-    let province = req.body.province;
-    let province_code = req.body.province;
-    let city = req.body.city;
-    let city_code = req.body.city_code;
-    let area = req.body.area;
-    let area_code = req.body.area_code;
-    let sign = req.body.sign;
+    let province = req.body.province_name;
+    let province_code = Number(req.body.province)?Number(req.body.province):0;
+    let city = req.body.city_name;
+    let city_code = Number(req.body.city)? Number(req.body.city):0;
+    let area = req.body.area_name;
+    let area_code = Number(req.body.area)?Number(req.body.area):0;
+    let signtext = req.body.signtext;
     let sql = 'UPDATE user SET ';
     if(password1) {
         sql += 'password="'+password1 +'",';
@@ -262,7 +263,7 @@ router.post('/profile/:user_id', function (req, res, next) {
         sql += 'username="'+username+'", sex ="'+sex+'", province="'+province+'",'
             +' province_code = "'+province_code+'", city="'+city+'",'
             +' city_code = "'+city_code+'", area="'+area+'",'
-            +' area_code = "'+area_code+'", sign="'+sign+'"'
+            +' area_code = "'+area_code+'", sign="'+signtext+'"'
             +' where uid="' + user_id + '"';
     }
     connection_write.query(sql, function (err, profileData) {

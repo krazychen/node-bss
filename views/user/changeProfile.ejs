@@ -78,13 +78,13 @@
                 <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">签名</label>
                     <div class="layui-input-block">
-                        <textarea id="sign" name="sign" placeholder="请输入签名" class="layui-textarea"></textarea>
+                        <textarea id="signtext" name="signtext" placeholder="请输入签名" class="layui-textarea"></textarea>
                     </div>
                 </div>
 
                 <div class="layui-form-item" >
                     <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="changeProfile">立即提交</button>
+                        <button class="layui-btn" lay-submit lay-filter="changeProfile">提交</button>
                     </div>
                 </div>
             </form>
@@ -137,6 +137,12 @@
 
         //监听提交
         form.on('submit(changeProfile)', function(data){
+            let province = $('#province').find("option:selected").text();
+            data.field.province_name=province;
+            let city = $('#city').find("option:selected").text();
+            data.field.city_name=city;
+            let area = $('#area').find("option:selected").text();
+            data.field.area_name=area;
             console.log(JSON.stringify(data.field));
             $.post('/user/profile/<%= session.uid %>', data.field, function (res) {
                 // console.log(res);
@@ -146,7 +152,7 @@
                     $('#psSign', window.parent.document).html("签名： "+res.session.sign);
                     $('#psun', window.parent.document).html(res.session.username);
                     $('#pscf', window.parent.document).html("来自 "+res.session.province+" "+res.session.city);
-
+                    $('#hdUserName', window.parent.document).html(res.session.username);
                     return layer.alert('修改个人资料成功');
                 }
             });
@@ -204,7 +210,7 @@
             "username": "<%= session.username %>"
             ,"email": "<%= session.mail %>"
             ,"sex": "<%= session.sex %>"
-            ,"sign": "<%= session.sign %>"
+            ,"signtext": "<%= session.sign %>"
         })
 
         <% if(session.province_code){ %>

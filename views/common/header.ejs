@@ -5,7 +5,7 @@
             <% if(session && session.username){ %>
                 <li class="layui-nav-item">
                     <a href="/user/index/<%= session.uid %>">
-                        <i class="layui-icon" id="hdUserName" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i><%= session.username %>的主页</a>
+                        <i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;&nbsp;</i><span id="hdUserName"><%= session.username %></span>的主页</a>
                 </li>
                 <li class="layui-nav-item">
                     <a class="fly-nav-avatar" href="/user/index/<%= session.uid %>">

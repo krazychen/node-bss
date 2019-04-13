@@ -26,7 +26,19 @@
                     </li>
                     <li class="layui-nav-item"><a href="/user/fatie/<%= session.uid %>" target="targetText">我的发帖</a></li>
                     <li class="layui-nav-item"><a href="/user/huitie/<%= session.uid %>" target="targetText">我的回帖</a></li>
+                    <% if(session.role_type=="管理员"){ %>
+                        <li class="layui-nav-item layui-nav-itemed">
+                            <a href="javascript:">论坛信息</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="/mag/userManager/<%= session.uid %>" target="targetText">用户管理</a></dd>
+                                <dd><a href="/user/changeAvatar/<%= session.uid %>" target="targetText">分类管理</a></dd>
+                                <dd><a href="/user/changeAvatar/<%= session.uid %>" target="targetText">帖子管理</a></dd>
+                                <dd><a href="/user/changeAvatar/<%= session.uid %>" target="targetText">图片管理</a></dd>
+                            </dl>
+                        </li>
+                    <% } %>
                 </ul>
+
             </div>
         </div>
 

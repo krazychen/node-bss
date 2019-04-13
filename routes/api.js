@@ -78,7 +78,7 @@ router.get('/topic/:topic_id', function (req, res, next) {
 
 router.post('/signin', function (req, res, next) {
     let connection_read = dbhelper.con_read();
-    let sql = 'SELECT username,mail, uid ,country,province,province_code,city,city_code,area,area_code,utime, sign ,sex,pic FROM user where mail = "' + req.body.mail + '" and password = "' + req.body.password + '"';
+    let sql = 'SELECT username,mail, uid ,country,province,province_code,city,city_code,area,area_code,utime, sign ,sex,pic,role_type FROM user where mail = "' + req.body.mail + '" and password = "' + req.body.password + '"';
     let sess = req.session;
     connection_read.query(sql, function (err, data) {
         connection_read.end();
@@ -101,6 +101,7 @@ router.post('/signin', function (req, res, next) {
             sess.city_code = data[0].city_code;
             sess.area = data[0].area;
             sess.area_code = data[0].area_code;
+            sess.role_type = data[0].role_type;
             if(data[0].pic.indexOf("public")!=-1){
                 sess.pic=data[0].pic.substring(data[0].pic.indexOf("public")+"public".length,data[0].pic.length);
             }else{
@@ -118,8 +119,9 @@ router.post('/signin', function (req, res, next) {
 router.post('/signup', function (req, res, next) {
     let connection_write = dbhelper.con_write();
     let connection_read = dbhelper.con_read();
+    let imgurl="public/images/avatar/2.jpg";
     let sql1 = 'SELECT mail FROM user where mail = "' + req.body.mail + '"';
-    let sql = 'INSERT INTO user(mail, username, password, utime, country) VALUES("' + req.body.mail + '", "' + req.body.username + '", "' + req.body.password + '", now(), "中国")';
+    let sql = 'INSERT INTO user(mail, username, password, utime, country,pic) VALUES("' + req.body.mail + '", "' + req.body.username + '", "' + req.body.password + '", now(), "中国","'+imgurl+'")';
     connection_read.query(sql1, function (err, data) {
         if (err)
             throw err;
