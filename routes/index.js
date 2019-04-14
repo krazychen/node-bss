@@ -5,15 +5,16 @@ const dbhelper = require('../lib/dbhelper');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    // console.log(req.query);
-    request('http://localhost:3000/api/topics/?page=' + (req.query.page || '1') + (req.query.sort?'&sort=hot':''), function (err, val, body) {
+    request('http://localhost:3000/api/topics/?page=' + (req.query.page || '1') + (req.query.sort?'&sort=hot':'')+ (req.query.type?'&type='+req.query.type:''), function (err, val, body) {
         if (err)
             throw err;
         let data = {
             title: 'NodeBBS',
             session: req.session,
             data: JSON.parse(body).data,
-            page: req.query.page || '1'
+            topicTypes:JSON.parse(body).topicTypes,
+            page: req.query.page || '1',
+            pages : JSON.parse(body).pages
         };
         res.render('index', data);
     });
@@ -41,7 +42,7 @@ router.get('/test/', function (req, res, next) {
         res.send('<p>欢迎' + sess.username + '第 ' + sess.views + '次访问,' + 'expires in:' + (sess.cookie.maxAge / 1000) + 's</p>');
     } else {
         sess.views = 1;
-        sess.username = 'ZKin';
+        sess.username = 'NodeBBS';
         res.end('welcome to the session demo. refresh!');
     }
 });

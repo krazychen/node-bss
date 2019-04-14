@@ -24,7 +24,7 @@
                 <h1><%= data.postname %></h1>
                 <div class="fly-detail-info">
                     <!-- <span class="layui-badge">审核中</span> -->
-                    <span class="layui-badge layui-bg-green fly-detail-column"><%= data.topic?data.topic:'HZNU' %></span>
+                    <span class="layui-badge layui-bg-green fly-detail-column"><%= data.topic?data.topic:'NodeBBS' %></span>
 
                     <% if(data.type && data.type !== "普通") { %>
                     <!-- <span class="layui-badge layui-bg-black">置顶</span> -->
@@ -45,15 +45,29 @@
           </span>
                 </div>
                 <div class="detail-about">
-                    <a class="fly-avatar" href="/user/<%= data.uid %>">
-                        <img src="https://picsum.photos/200/200/?image=<%= new Date().getSeconds() + 30 %>" alt="贤心">
+                    <a class="fly-avatar" href="/user/<%= data.uid %>" style="top:3px;">
+                        <% if(data.pic.indexOf("public") != -1){ %>
+                            <img src="<%= data.pic.substring(data.pic.indexOf("public") + "public".length, data.pic.length) %>">
+                        <% }else{ %>
+                            <img src="<%= data.pic %>">
+                        <% } %>
                     </a>
                     <div class="fly-detail-user">
                         <a href="/user/<%= data.uid %>" class="fly-link">
                             <cite><%= data.username %></cite>
                             <!-- <i class="layui-badge fly-badge-vip">VIP1</i> -->
                         </a>
-                        <span><%= data.publishtime %></span>
+                        <%
+                        function p(s) {
+                            return s < 10 ? '0' + s: s;//时间补零
+                        }
+                        let date = new Date(data.publishtime);
+                        let date_value1 = '未知'
+                        if(date) {
+                            date_value1=date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+                        }
+                        %>
+                        <span><%= date_value1 %></span>
                     </div>
                     <!-- <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
                         <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="">编辑此贴</a></span>
@@ -75,8 +89,12 @@
                     <% reply && reply.forEach(function (item, index) { %>
                     <li>
                         <div class="detail-about detail-about-reply">
-                            <a class="fly-avatar" href="">
-                                <img src="https://picsum.photos/200/200/?random">
+                            <a class="fly-avatar" href="" style="top:3px;">
+                                <% if(item.pic.indexOf("public") != -1){ %>
+                                    <img src="<%= item.pic.substring(item.pic.indexOf("public") + "public".length, item.pic.length) %>">
+                                <% }else{ %>
+                                    <img src="<%= item.pic %>">
+                                <% } %>
                             </a>
                             <div class="fly-detail-user">
                                 <a href="" class="fly-link">
@@ -84,14 +102,21 @@
                                 </a>
                             </div>
                             <div class="detail-hits">
-                                <span><%= item.atime %></span>
+                                <%
+                                    let date = new Date(item.atime);
+                                    let date_value1 = '未知'
+                                    if(date) {
+                                        date_value1=date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + p(date.getHours()) + ':' + p(date.getMinutes()) + ':' + p(date.getSeconds());
+                                    }
+                                %>
+                                <span><%= date_value1 %></span>
                             </div>
                         </div>
                         <div class="detail-body jieda-body photos">
                             <%- item.content.replace(/\\n/g, '<br>') %>
                         </div>
-                        <div class="jieda-reply"><span class="jieda-zan" type="zan"><i
-                                        class="iconfont icon-zan"></i><em><%= item.visits%></em></span>
+                        <div class="jieda-reply">
+                            <span class="jieda-zan" type="zan"><i class="iconfont icon-zan"></i><em><%= item.visits%></em></span>
                             <span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span>
                             <!--<div class="jieda-admin">-->
                             <!--<span type="edit">编辑</span>-->
@@ -164,6 +189,7 @@
         });
         return false;
     });
+
 </script>
 
 </body>

@@ -9,6 +9,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/topics', function (req, res) {
+
     let connection_read = dbhelper.con_read();
     // 在这里添加代码
     let current_page = 0; //默认为1
@@ -24,9 +25,20 @@ router.get('/topics', function (req, res) {
     if(req.query.sort) {
         sql = 'SELECT * FROM post natural join user ORDER BY reply DESC limit ' + num + ' offset ' + num * (current_page-1);
     }
+    if(req.query.type) {
+        sql = 'SELECT * FROM post natural join user where post.type_id="'+req.query.type+'" ORDER BY lasttime DESC limit ' + num + ' offset ' + num * (current_page-1);
+    }
+    let topicTypeSql = 'select topic,type_id,count(topic) from post GROUP BY topic,type_id ORDER BY count(topic) desc limit 10';
+
+    let countSql ='SELECT count(*) FROM post natural join user';
+    if(req.query.type){
+        countSql = 'SELECT count(*) FROM post natural join user where post.type_id="'+req.query.type+'"';
+    }
+
+    console.log(sql);
     let data = {};
     connection_read.query(sql, function (err, val) {
-        connection_read.end();
+        // connection_read.end();
         if (err)
             throw err;
         if (val && val.length > 0) {
@@ -35,7 +47,20 @@ router.get('/topics', function (req, res) {
         } else {
             data.status = 'failed';
         }
-        res.json(data);
+        connection_read.query(topicTypeSql, function (err, topicTypes) {
+            data.topicTypes=topicTypes;
+
+            connection_read.query(countSql, function (err, counts) {
+                connection_read.end();
+                // console.log(counts)
+                data.total = counts[0]['count(*)'];
+                data.pages = Math.floor(data.total/15)+1;
+                console.log(data.pages);
+                res.json(data);
+            });
+            // res.json(data);
+        });
+
     })
 });
 
@@ -46,6 +71,8 @@ router.get('/topic/:topic_id', function (req, res, next) {
     let sql = 'SELECT * FROM post NATURAL JOIN user where pid = "' + pid + '"';
     let sql1 = 'SELECT * FROM answer NATURAL JOIN user where pid = "' + pid + '"';
     let sql2 = 'update post set visits=visits+1 where pid = "' + pid + '"';
+    let topicTypeSql = 'select topic,type_id,count(topic) from post GROUP BY topic,type_id ORDER BY count(topic) desc limit 10';
+
     let data = {};
     connection_read.query(sql, function (err, val) {
         if (err)
@@ -62,7 +89,6 @@ router.get('/topic/:topic_id', function (req, res, next) {
 
         })
         connection_read.query(sql1, function (err, val) {
-            connection_read.end();
             if (err)
                 throw err;
             if (val && val.length > 0) {
@@ -71,7 +97,12 @@ router.get('/topic/:topic_id', function (req, res, next) {
             } else {
                 data.status = 'failed';
             }
-            res.json(data);
+            connection_read.query(topicTypeSql, function (err, topicTypes) {
+                connection_read.end();
+                data.topicTypes=topicTypes;
+                res.json(data);
+            });
+            // res.json(data);
         })
     })
 });
@@ -143,7 +174,7 @@ router.post('/signup', function (req, res, next) {
 
 router.post('/add', function (req, res, next) {
     let connection_write = dbhelper.con_write();
-    let sql = "INSERT INTO post(postname,uid,topic,pcontent,publishtime,lasttime)VALUES('" + req.body.postname + "','" + req.session.uid + "','" + req.body.topic + "','" + req.body.content + "', now(),now())";
+    let sql = "INSERT INTO post(postname,uid,topic,type_id,pcontent,publishtime,lasttime)VALUES('" + req.body.postname + "','" + req.session.uid + "','" + req.body.topic + "','" +req.body.topic_id+"','"+ req.body.content + "', now(),now())";
     let connection_read = dbhelper.con_read();
     let sql1 = 'SELECT * FROM post where postname ="' + req.body.postname + '"and uid="' + req.session.uid + '" ORDER BY publishtime DESC LIMIT 1 ';
     let sess = req.session;
