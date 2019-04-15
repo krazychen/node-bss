@@ -37,8 +37,8 @@ router.get('/tableuser', function (req, res, next) {
     if(username){
         sql += ' and username like "%'+username+'%"';
     }
-    sql += ' order by utime desc limit ' + start + ',2'+limit;
-    // console.log(sql);
+    sql += ' order by utime desc limit ' + start + ','+limit;
+    console.log(sql);
     let sqlcount = 'select count(mail) from user ';
     let data = {};
     connection_read.query(sql, function (err, userdata) {
@@ -157,5 +157,7 @@ router.post('/deleteUser', function (req, res, next) {
         res.json(status);
     });
 })
+
+
 
 module.exports = router;

@@ -5,7 +5,9 @@ const dbhelper = require('../lib/dbhelper');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    request('http://localhost:3000/api/topics/?page=' + (req.query.page || '1') + (req.query.sort?'&sort=hot':'')+ (req.query.type?'&type='+req.query.type:''), function (err, val, body) {
+    request('http://localhost:3000/api/topics/?page=' + (req.query.page || '1') + (req.query.sort?'&sort=hot':'')
+        + (req.query.type?'&type='+req.query.type:'')
+        + (req.query.key?'&key='+req.query.key:''), function (err, val, body) {
         if (err)
             throw err;
         let data = {

@@ -28,6 +28,10 @@ router.get('/topics', function (req, res) {
     if(req.query.type) {
         sql = 'SELECT * FROM post natural join user where post.type_id="'+req.query.type+'" ORDER BY lasttime DESC limit ' + num + ' offset ' + num * (current_page-1);
     }
+    if(req.query.key){
+        sql = 'SELECT * FROM post natural join user where postname like "%'+req.query.key+'%" ORDER BY lasttime DESC limit ' + num + ' offset ' + num * (current_page-1);
+    }
+
     let topicTypeSql = 'select topic,type_id,count(topic) from post GROUP BY topic,type_id ORDER BY count(topic) desc limit 10';
 
     let countSql ='SELECT count(*) FROM post natural join user';
@@ -35,7 +39,6 @@ router.get('/topics', function (req, res) {
         countSql = 'SELECT count(*) FROM post natural join user where post.type_id="'+req.query.type+'"';
     }
 
-    console.log(sql);
     let data = {};
     connection_read.query(sql, function (err, val) {
         // connection_read.end();
@@ -55,7 +58,7 @@ router.get('/topics', function (req, res) {
                 // console.log(counts)
                 data.total = counts[0]['count(*)'];
                 data.pages = Math.floor(data.total/15)+1;
-                console.log(data.pages);
+                // console.log(data.pages);
                 res.json(data);
             });
             // res.json(data);

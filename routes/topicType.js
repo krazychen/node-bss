@@ -29,7 +29,7 @@ router.get('/tableTopicType', function (req, res, next) {
     if(remark){
         sql += ' and remark like "%'+remark+'%"';
     }
-    sql += ' order by type desc limit ' + start + ',2'+limit;
+    sql += ' order by type desc limit ' + start + ','+limit;
     // console.log(sql);
     let sqlcount = 'select count(id) from topic_type ';
     let data = {};

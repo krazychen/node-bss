@@ -43,4 +43,21 @@ router.get('/:topic_id', function (req, res, next) {
     });
 });
 
+router.get('/huitie/:topic_id', function (req, res, next) {
+    let topic_id = req.params.topic_id;
+    request('http://localhost:3000/api/topic/' + topic_id, function (err, val, body) {
+        if (err)
+            throw err;
+        let data = {
+            title: 'NodeBBS',
+            session: req.session,
+            data: JSON.parse(body).data,
+            reply: JSON.parse(body).reply,
+            topicTypes:JSON.parse(body).topicTypes
+        };
+        res.render('topic/huitie', data);
+    });
+});
+
+
 module.exports = router;

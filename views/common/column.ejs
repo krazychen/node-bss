@@ -15,7 +15,8 @@
         </ul>
 
         <div class="fly-column-right layui-hide-xs">
-            <span class="fly-search"><i class="layui-icon">&#xe615;</i></span>
+            <span class="fly-search"><i id="search" name="search" class="layui-icon">&#xe615;</i></span>
+            <a href="/" id="searchlink" class="layui-this" type="hidden"></a>
             <a href="/topic/add/" class="layui-btn">发表新帖</a>
         </div>
 
@@ -25,3 +26,37 @@
         </div>
     </div>
 </div>
+<script>
+
+    $("#search").on("click",function(){
+        layer.open({
+            type: 1
+            ,title: false
+            ,closeBtn: false
+            ,shadeClose: true
+            ,maxWidth: 10000
+            ,skin: 'fly-layer-search'
+            ,content: ['<form action="">'
+                ,'<input autocomplete="off" placeholder="搜索内容，回车跳转" type="text" name="key">'
+                ,'</form>'].join('')
+            ,success: function(layero){
+                var input = layero.find('input');
+                input.focus();
+
+                layero.find('form').submit(function(){
+                    var val = input.val();
+                    if(val.replace(/\s/g, '') === ''){
+                        return false;
+                    }
+                    input.val(encodeURI(val));
+                    // input.val('site:/api/topics?key= '+ input.val());
+                    // $("#searchlink").attr("href","/?key=hot");
+                    // console.log($("#searchlink").attr("href"))
+                    // $("#searchlink").click();
+                });
+            }
+        })
+    })
+
+
+</script>
